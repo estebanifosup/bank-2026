@@ -23,7 +23,13 @@ public class CurrentAccount(string number, Person owner, double creditLine = 0) 
             throw new InvalidOperationException("Ligne de crédit dépassée.");
         }
 
+        double oldBalance = Balance;
         base.Withdraw(amount);
+
+        if (oldBalance >= 0 && Balance < 0)
+        {
+            OnNegativeBalance();
+        }
     }
 
     protected override double CalculInterets() => Balance * (Balance >= 0 ? 0.03 : 0.0975);

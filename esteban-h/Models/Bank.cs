@@ -15,14 +15,22 @@ public class Bank(string name)
         }
 
         Accounts.Add(account.Number, account);
+        account.NegativeBalanceEvent += NegativeBalanceAction;
     }
 
     public void DeleteAccount(string number)
     {
-        if (!Accounts.Remove(number))
+        if (!Accounts.Remove(number, out Account? account))
         {
             throw new KeyNotFoundException($"Le compte {number} n'existe pas.");
         }
+
+        account.NegativeBalanceEvent -= NegativeBalanceAction;
+    }
+
+    private void NegativeBalanceAction(Account account)
+    {
+        Console.WriteLine($"Le numéro de compte {account.Number} vient de passer en négatif");
     }
 
     public double GetBalance(string number)
